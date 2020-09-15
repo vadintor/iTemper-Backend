@@ -1,6 +1,6 @@
 {
     "name": "itemper-backend",
-    "version": "0.0.40",
+    "version": "0.0.41",
     "description": "iTemper.io server implementation",
     "repository": {
         "type": "git",
