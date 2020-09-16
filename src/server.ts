@@ -1,10 +1,15 @@
+import * as config from "./services/config";
 import log from "./services/logger";
 
+import express from "express";
+import { Application } from "express";
+import { initApp } from "./app";
+
+
+import * as fs from "fs";
+import * as https from "https";
 import * as http from "http";
-import { app } from "./app";
-
-import * as monitor from "./features/monitor/monitor";
-
+import * as WebSocket from "ws";
 
 // DB Databases
 import { userDBConnectionString, tenantDBConnectionString } from "./services/config";
@@ -15,41 +20,39 @@ UserDatabase.initialize(userDBConnectionString);
 import * as TenantDatabase from "./features/tenant/tenant-database";
 TenantDatabase.initialize(tenantDBConnectionString);
 
-import * as WebSocket from "ws";
+// Create server
 
-const httpServer: http.Server = http.createServer(app);
+export const app = express();
 
-app.set("port", process.env.PORT || 3000);
 
-const iTemperServer = httpServer.listen(app.get("port"), () => {
+
+function useHttps(app: Application) {
+  const serverOptions: https.ServerOptions = {
+    key: fs.readFileSync("./certs/server-cert.key"),
+    cert: fs.readFileSync("./certs/server-cert.pem"),
+  };
+  log.info("server: Creating https web server");
+  const server = https.createServer(serverOptions, app);
+  return server;
+}
+
+function useHttp(app: Application) {
+  log.info("server: Creating http web server");
+  const server = http.createServer(app);
+  return server;
+}
+
+// Use reverse proxy in production
+// Need to run https in development to allow Web Bluetooth device requests
+const server = config.PRODUCTION ? useHttp(app) : useHttps(app);
+
+const wsOptions = { server, clientTracking: true, perMessageDeflate: false, path: "/ws" };
+const wss = new WebSocket.Server(wsOptions);
+
+initApp(wss, app);
+
+server.listen(config.PORT, () => {
   log.info(
-    "iTemper back-end app is running at port " + app.get("port") +
+    "server: web server listening at port " + config.PORT +
     " in " + app.get("env") + " mode");
-  log.info("Press CTRL-C to stop\n");
 });
-
-export const wss = new WebSocket.Server({server: httpServer, clientTracking: true, perMessageDeflate: false, path: "/ws"} );
-
-monitor.init(wss);
-
-wss.on("connection", (ws: WebSocket, request: http.IncomingMessage): void  => {
-
-  log.info("server.wss.on(connection): new connection from client, url/headers: " + ws.url + "/" + JSON.stringify(request.headers));
-  const message = {command: "ping", data: "Hello world from server"};
-  ws.send(JSON.stringify(message));
-
-  ws.on("close", (ws: WebSocket, code: number, reason: string): void => {
-    log.info("server.wss.on(close): Websocket: " + ws.url + " + code: " + code +  "reason: " + reason);
-  });
-
-  ws.on("message", (data: Buffer): void => {
-    log.info("server.wss.on (message):  message=" + data.toString());
-
-    monitor.parseInboundMessage(ws, data);
-
-  });
-
-  ws.on("error", (err): void => {
-      log.error("ws.on: Error: " + err);
-    });
-} );

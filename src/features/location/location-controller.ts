@@ -5,7 +5,6 @@ import { Response, Request } from "express";
 import { body, param, validationResult, ValidationChain } from "express-validator";
 import { Model } from "mongoose";
 import { LocationDocument } from "./location-model";
-import { ISensor, Descriptor } from "../sensor/sensor-model";
 import path from "path";
 
 
@@ -98,7 +97,6 @@ export let postCreateLocation = (req: Request, res: Response): void => {
 export let getAllLocations = (req: Request, res: Response): void => {
   const m = "getAllLocations, " + res.locals.tenantID;
   const Location: Model<LocationDocument> = res.locals.Location ;
-  const Sensor: Model<ISensor> = res.locals.Sensor;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -121,7 +119,6 @@ export let getAllLocations = (req: Request, res: Response): void => {
 export let putName = (req: Request, res: Response): void => {
   const m = "putName, " + res.locals.tenantID;
   const Location: Model<LocationDocument> = res.locals.Location ;
-  const Sensor: Model<ISensor> = res.locals.Sensor;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -154,7 +151,6 @@ export let putName = (req: Request, res: Response): void => {
 export let putColor = (req: Request, res: Response): void => {
   const m = "putColor, " + res.locals.tenantID;
   const Location: Model<LocationDocument> = res.locals.Location ;
-  const Sensor: Model<ISensor> = res.locals.Sensor;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -186,7 +182,6 @@ export let putColor = (req: Request, res: Response): void => {
 export let putFile = (req: Request, res: Response): void => {
   const m = "putFile, " + res.locals.tenantID;
   const Location: Model<LocationDocument> = res.locals.Location ;
-  const Sensor: Model<ISensor> = res.locals.Sensor;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -231,7 +226,6 @@ export let putFile = (req: Request, res: Response): void => {
 export let putSensors = (req: Request, res: Response): void => {
   const m = "putSensors, " + res.locals.tenantID;
   const Location: Model<LocationDocument> = res.locals.Location ;
-  const Sensor: Model<ISensor> = res.locals.Sensor;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -262,7 +256,6 @@ export let putSensors = (req: Request, res: Response): void => {
 export let deleteLocation = (req: Request, res: Response): void => {
   const m = "deleteLocation, " + res.locals.tenantID;
   const Location: Model<LocationDocument> = res.locals.Location ;
-  const Sensor: Model<ISensor> = res.locals.Sensor;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

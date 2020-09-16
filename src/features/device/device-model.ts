@@ -8,9 +8,9 @@ const moduleName = "device-model.";
 function label(name: string): string {
   return moduleName + name + ": ";
 }
-
 export interface DeviceInterface {
     name: string;
+    color: string;
     deviceID: string;
     key: string;
     hash: string;
@@ -24,6 +24,7 @@ export interface DeviceDocument extends DeviceInterface, mongoose.Document {}
 
 export const DeviceSchema = new mongoose.Schema({
     name: {type: String },
+    color: {type: String },
     deviceID: {type: String, unique: true, timestamps: true },
     key: {type: String},
     hash: {type: String},
@@ -56,6 +57,7 @@ DeviceSchema.methods.comparePassword = function (candidateKey: string, cb: (err:
 export type DeviceModel = mongoose.Model<DeviceDocument>;
 
 export const Device: mongoose.Model<DeviceDocument> = mongoose.model<DeviceDocument>("Device", DeviceSchema);
+
 
 
 

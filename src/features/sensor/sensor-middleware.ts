@@ -7,23 +7,30 @@ import { Connection, Model } from "mongoose";
 import { authorizeJWT, authorizeAPIKey } from "./../auth/auth-middleware";
 import { useTenantDB } from "./../tenant/tenant-middleware";
 import { tenantModel } from "./../tenant/tenant-model";
-import { ISensor, SensorSchema } from "./sensor-model";
+import { SensorDocument, SensorSchema } from "./sensor-model";
+import { SensorLogDocument, SensorLogSchema } from "./sensor-model";
 
-// assume the requests has been authorized an tenantID assigned
-export function useSensorModel(req: Request, res: Response, next: NextFunction) {
-    log.debug("sensor-middleware.useSensorModel: res.locals.connection.db.dbName=" + res.locals.connection.db.dbName);
-    log.debug("sensor-middleware.useSensorModel: res.locals.tenantID=" + res.locals.tenantID);
+const moduleName = "sensor-middleware.";
+function label(name: string): string {
+  return moduleName + name + ": ";
+}
+
+// Pre-req: requests has been authorized and tenantID assigned
+export function useSensorModels(req: Request, res: Response, next: NextFunction) {
+    const m = "useSensorModels";
     const connection: Connection = res.locals.connection;
     const tenantID = res.locals.tenantID;
 
-    if (!connection) next(new Error());
-    const SensorModel: Model<ISensor> = tenantModel("Sensor", SensorSchema, tenantID, connection);
+    if (!connection) next(new Error("No DB Connection"));
+    if (!tenantID) next(new Error("No tenantId"));
+
+    const SensorModel: Model<SensorDocument> = tenantModel("Sensor", SensorSchema, tenantID, connection);
+    const SensorLogModel: Model<SensorLogDocument> = tenantModel("SensorLog", SensorLogSchema, tenantID, connection);
+
     res.locals.Sensor = SensorModel;
-    log.debug("sensor-middleware.useSensorModel res.locals.Sensor=" + util.stringify(res.locals.Sensor));
-
-
+    res.locals.SensorLog = SensorLogModel;
     next();
 }
 
-export const SensorDeviceMiddleWare = [authorizeAPIKey, useTenantDB, useSensorModel];
-export const SensorUserMiddleWare = [authorizeJWT, useTenantDB, useSensorModel];
+export const SensorDeviceMiddleWare = [authorizeAPIKey, useTenantDB, useSensorModels];
+export const SensorUserMiddleWare = [authorizeJWT, useTenantDB, useSensorModels];

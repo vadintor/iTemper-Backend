@@ -13,15 +13,15 @@ export function useTenantDB(req: Request, res: Response, next: NextFunction) {
 
     database.useDB(tenantID, (err: Error, connection: Connection) => {
         if (err) {
-            log.error("sensor-middleware: Error when connecting to tenant DB " + tenantID);
+            log.error("tenant-middleware: Error when connecting to tenant DB " + tenantID);
             next(err);
         }
         if (connection) {
-            log.info("sensor-middleware: connected to tenant DB " + tenantID);
+            log.info("tenant-middleware: connected to tenant DB " + tenantID);
             res.locals.connection = connection;
             next();
         } else {
-            log.error("sensor-middleware: could not connect to tenant DB " + tenantID);
+            log.error("tenant-middleware: could not connect to tenant DB " + tenantID);
             next(new Error());
         }
     });

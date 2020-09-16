@@ -99,7 +99,6 @@ export let postSignup = (req: express.Request, res: express.Response, next: expr
   user.set("password", req.body.password);
 
   // Calling signup when logged in, the new user inherits the tenant ID
-  log.debug(label(m) + "tenantID= " + res.locals.tenantID);
   if (res.locals.tenantID) {
       // Is only true if middleware has verified the JWT and set tenant ID
     user.tenantID = res.locals.tenantID;

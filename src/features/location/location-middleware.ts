@@ -10,15 +10,13 @@ import { Connection, Model } from "mongoose";
 import { authorizeJWT } from "./../auth/auth-middleware";
 import { useTenantDB } from "./../tenant/tenant-middleware";
 import { tenantModel } from "./../tenant/tenant-model";
-import { useSensorModel } from "./../sensor/sensor-middleware";
+import { useSensorModels } from "./../sensor/sensor-middleware";
 import { LocationDocument, LocationSchema } from "./location-model";
 
 const moduleName = "location-middleware.";
 function label(name: string): string {
   return moduleName + name + ": ";
 }
-
-
 const limits =  {
     fileSize: 2_000_000,
     files: 1,
@@ -61,11 +59,11 @@ function useUpload (req: Request, res: Response, next: NextFunction)  {
 export const LocationMiddleWare = [authorizeJWT,
                                   useTenantDB,
                                   useLocationModel,
-                                  useSensorModel];
+                                  useSensorModels];
 
 export const LocationUploadMiddleWare = [authorizeJWT,
                                   useTenantDB,
                                   useLocationModel,
-                                  useSensorModel,
+                                  useSensorModels,
                                   useUpload,
                                   ];

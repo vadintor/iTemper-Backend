@@ -34,7 +34,8 @@ Edit version in package.json
 npm run build
 npm run release
 
-## deploy preparations
+## deploy preparations 
+### Deprecated
 tar -czvf bin.tar.gz bin
 scp bin tova@temper:
 ssh tova@itemper
@@ -45,5 +46,7 @@ initKeys.sh
 initMongodb.sh
 
 ## Deploy a back-end release
+### Deprecated
 scp release/iTemperNode_<version>.tar.gz tova@iTemper:
 deploy.sh <version>
+

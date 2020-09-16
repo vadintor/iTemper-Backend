@@ -1,7 +1,7 @@
 
 import log from "../src/services/logger";
 log.setLevel("debug");
-import { app } from "../src/app";
+import { app } from "../src/server";
 import supertest  from "supertest";
 const request = supertest(app);
 

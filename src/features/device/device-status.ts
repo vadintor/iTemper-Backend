@@ -1,3 +1,5 @@
+import { isValidObjectId } from "mongoose";
+
 export interface MemoryUsage {
     rss: number;
     heapTotal: number;
@@ -38,6 +40,14 @@ export interface DeviceData {
     pid: number;
 }
 
+export function isStatusValid(data: Partial<DeviceData>): boolean {
+    if (data.timestamp && data.hostname && data.loadavg && data.uptime &&
+    data.freemem && data.totalmem && data.networkInterfaces && data.userInfo &&
+    data.memoryUsage && data.cpuUsage && data.pid)
+        return true;
+    else
+        return false;
+}
 export function formatDeviceData (data: DeviceData): string {
     let report: string = "";
     report += "time: " + data.timestamp.toLocaleString();
@@ -45,5 +55,4 @@ export function formatDeviceData (data: DeviceData): string {
     report += ", uptime" + data.uptime;
     report += ", networkInterfaces" + JSON.stringify(data.networkInterfaces);
     return report;
-
 }

@@ -11,10 +11,12 @@
     "tslint.exclude": "**/node_modules/**/*",
     "cSpell.words": [
         "definitelytyped",
+        "descs",
         "itemper",
         "lusca",
         "node",
         "torbjorn",
+        "uppland",
         "vading"
     ],
     "cSpell.ignoreWords": [
