@@ -47,7 +47,7 @@
         "express-validator": "^6.5.0",
         "express-ws": "^4.0.0",
         "jsonwebtoken": "^8.5.1",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.21",
         "lusca": "^1.6.1",
         "mkdirp": "^1.0.4",
         "mongo-tenant": "^1.7.0",
